@@ -10,7 +10,7 @@ async function bootstrap() {
   // class-validation 동작을 위해 사용
   app.useGlobalPipes(new ValidationPipe());
 
-  //
+  // Swagger Security
   app.use(
     ['/api', '/api-json'],
     expressBasicAuth({

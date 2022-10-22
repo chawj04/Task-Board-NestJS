@@ -18,7 +18,9 @@ export class UsersService {
   ) {}
 
   // User_SignUp
-  async createUser(createUserDto: CreateUserDto): Promise<UsersEntity | void> {
+  async createUser(
+    createUserDto: CreateUserDto,
+  ): Promise<UsersEntity | object> {
     const { username, email, password } = createUserDto;
 
     // password 암호화
@@ -33,7 +35,14 @@ export class UsersService {
     user.password = hash;
 
     try {
-      return await this.userRepository.save(user);
+      await this.userRepository.save(user);
+      // Response Filtering
+      return {
+        username: user.username,
+        email: user.email,
+        userIndex: user.userIndex,
+        createdAt: user.createdAt,
+      };
     } catch (error) {
       // console.log(error.errno);
       // 이메일 중복 에러 처리

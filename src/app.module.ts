@@ -16,7 +16,10 @@ import { UsersModule } from './users/users.module';
       password: 'root',
       database: 'nestjs',
       autoLoadEntities: true,
+      // Dev -> true | Prod -> false
       synchronize: true,
+      // Time - Seoul
+      timezone: 'Z',
     }),
   ],
   controllers: [AppController],
