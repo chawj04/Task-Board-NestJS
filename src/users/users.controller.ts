@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserResponseDto } from './dto/create-user-response.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -8,6 +8,9 @@ import { UsersService } from './users.service';
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
+  // UsersController - Logger
+  private logger = new Logger('UsersController');
+
   constructor(private readonly usersService: UsersService) {}
 
   // User_SignUp
@@ -26,6 +29,8 @@ export class UsersController {
     type: CreateUserResponseDto,
   })
   signUp(@Body() createUserDto: CreateUserDto): Promise<UsersEntity | object> {
+    // CreateUser - Logger
+    this.logger.verbose(`Created New User - ${JSON.stringify(createUserDto)}`);
     return this.usersService.createUser(createUserDto);
   }
 }

@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -11,6 +12,9 @@ import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
+  // UsersService - Logger
+  private logger = new Logger('UsersService');
+
   constructor(
     @InjectRepository(UsersEntity)
     private userRepository: Repository<UsersEntity>,
@@ -22,6 +26,9 @@ export class UsersService {
     createUserDto: CreateUserDto,
   ): Promise<UsersEntity | object> {
     const { username, email, password } = createUserDto;
+
+    // CreateUser - Logger
+    this.logger.verbose(`Created New User - ${JSON.stringify(createUserDto)}`);
 
     // password 암호화
     const saltRounds = 10;
