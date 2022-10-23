@@ -1,10 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   Unique,
@@ -22,8 +20,6 @@ export class UsersEntity {
     description: 'username',
     required: true,
   })
-  @IsString()
-  @IsNotEmpty()
   @Column('varchar', { name: 'username', length: 45 })
   username: string;
 
@@ -32,8 +28,6 @@ export class UsersEntity {
     description: 'email',
     required: true,
   })
-  @IsEmail()
-  @IsNotEmpty()
   @Column('varchar', { name: 'email', length: 45 })
   email: string;
 
@@ -42,19 +36,15 @@ export class UsersEntity {
     description: 'password',
     required: true,
   })
-  // @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, {
-  //   message: 'Using a strong password',
-  // })
-  @Column('varchar', { name: 'password', length: 100, select: false })
+  @Column('varchar', { name: 'password', length: 100 })
   password: string;
+
+  @Column()
+  salt: string;
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @Exclude()
-  @DeleteDateColumn()
-  deletedAt?: Date | null; //초기 null -> 삭제시 입력
 }
