@@ -108,8 +108,11 @@ export class UsersService {
   }
 
   // Edit_User
-  async updateUser(updateUserDto: UpdateUserDto): Promise<UpdateResult> {
-    const { userIndex, email, password, username } = updateUserDto;
+  async updateUser(
+    userIndex: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UpdateResult> {
+    const { email, password, username } = updateUserDto;
     return await this.dataSource
       .createQueryBuilder()
       .update(UsersEntity)
@@ -124,7 +127,7 @@ export class UsersService {
       .createQueryBuilder()
       .delete()
       .from(UsersEntity)
-      .where('userIndex = :userIndex', { userIndex: userIndex })
+      .where('userIndex = :userIndex', { userIndex })
       .execute();
   }
 }

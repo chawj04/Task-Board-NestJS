@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { TaskBoardsModule } from './task-boards/task-boards.module';
 import * as config from 'config';
 
 const nestDbConfig = config.get('db');
@@ -26,6 +27,7 @@ const nestDbConfig = config.get('db');
       timezone: 'Z',
     }),
     AuthModule,
+    TaskBoardsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

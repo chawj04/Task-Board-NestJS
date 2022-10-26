@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import {
   Body,
   Controller,
@@ -11,6 +12,8 @@ import {
   Patch,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthService } from 'src/auth/auth.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { CreateUserResponseDto } from './dto/create-user-response.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -25,7 +28,10 @@ export class UsersController {
   // UsersController - Logger
   private logger = new Logger('UsersController');
 
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+  ) {}
 
   // SignUp_User
   @Post('signup')
@@ -59,39 +65,49 @@ export class UsersController {
 
   // SignIn_User
   @Post('signin')
-  signIn(
+  async signIn(
     @Body(ValidationPipe) userLoginDto: UserLoginDto,
-  ): Promise<UsersEntity> {
-    return this.usersService.accessUser(userLoginDto);
+  ): Promise<UsersEntity | object> {
+    const sginInUser = await this.usersService.accessUser(userLoginDto);
+    // console.log('sginInUser', sginInUser);
+    return this.authService.login(sginInUser);
   }
 
   // Find_User
+  @UseGuards(JwtAuthGuard)
   @Get(':userIndex')
   findUser(
     @Param('userIndex', new ParseIntPipe())
     userIndex: number,
   ): Promise<UsersEntity> {
-    return this.usersService.getUser(userIndex);
+    return this.usersService.getUser(+userIndex);
   }
 
   // Find_All_User
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAllUser(): Promise<UsersEntity[]> {
     return this.usersService.getUserList();
   }
 
   // Update_User
-  @Patch()
-  updateUser(@Body() updateUserDto: UpdateUserDto): Promise<UpdateResult> {
-    return this.usersService.updateUser(updateUserDto);
+  @UseGuards(JwtAuthGuard)
+  @Patch(':userIndex')
+  updateUser(
+    @Param('userIndex', new ParseIntPipe())
+    userIndex: number,
+    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+  ): Promise<UpdateResult> {
+    return this.usersService.updateUser(+userIndex, updateUserDto);
   }
 
   // Remove_User
+  @UseGuards(JwtAuthGuard)
   @Delete(':userIndex')
   remove(
     @Param('userIndex', new ParseIntPipe())
     userIndex: number,
   ): Promise<DeleteResult> {
-    return this.usersService.remove(userIndex);
+    return this.usersService.remove(+userIndex);
   }
 }

@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { TaskBoardsEntity } from 'src/task-boards/entities/tasks.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
@@ -47,4 +48,9 @@ export class UsersEntity {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany((type) => TaskBoardsEntity, (taskBoards) => taskBoards.users, {
+    eager: true,
+  })
+  taskBoards: TaskBoardsEntity[];
 }
