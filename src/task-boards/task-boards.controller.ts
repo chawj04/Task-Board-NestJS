@@ -1,18 +1,19 @@
 import {
   Body,
   Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Patch,
   Post,
+  UploadedFiles,
+  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
-import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
+import { Auth } from 'src/common/decorators/auth.decorator';
+import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { multerOptions } from 'src/common/utils/multer.options';
+import { UserRole, UsersEntity } from 'src/users/entities/users.entity';
+import { InsertResult } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-taks.dto';
 import { TaskBoardsEntity } from './entities/tasks.entity';
 import { TaskBoardsService } from './task-boards.service';
 
@@ -21,44 +22,39 @@ import { TaskBoardsService } from './task-boards.service';
 export class TaskBoardsController {
   constructor(private readonly taskBoardsService: TaskBoardsService) {}
 
+  // Test_Get_Current_User
+  // @Post('test')
+  // @Auth(UserRole.User, UserRole.Admin)
+  // getUsers(@CurrentUser() user: UsersEntity) {
+  //   console.log('user', user);
+  //   return user;
+  // }
+
   // Regist_NewTask
   @Post('regist')
-  registNewTask(
+  @Auth(UserRole.User, UserRole.Admin)
+  async registNewTask(
     @Body(ValidationPipe) createTaskDto: CreateTaskDto,
-  ): Promise<InsertResult> {
-    return this.taskBoardsService.insertNewTask(createTaskDto);
+    @CurrentUser() currentUser: UsersEntity,
+  ): Promise<InsertResult | TaskBoardsEntity> {
+    // console.log('controller', currentUser);
+    return await this.taskBoardsService.insertNewTask(
+      createTaskDto,
+      currentUser,
+    );
   }
 
   // Find_Task
-  @Get(':taskIndex')
-  findTask(
-    @Param('taskIndex', new ParseIntPipe())
-    taskIndex: number,
-  ): Promise<TaskBoardsEntity> {
-    return this.taskBoardsService.getTask(+taskIndex);
-  }
-
   // Find_All_Task
-  @Get()
-  findAllTask(): Promise<TaskBoardsEntity[]> {
-    return this.taskBoardsService.getTaskList();
-  }
-
   // Update_Task
-  @Patch(':taskIndex')
-  updateTask(
-    @Param('taskIndex') taskIndex: number,
-    @Body(ValidationPipe) updateTaskDto: UpdateTaskDto,
-  ): Promise<UpdateResult> {
-    return this.taskBoardsService.editTask(+taskIndex, updateTaskDto);
-  }
-
   // Remove_Task
-  @Delete(':taskIndex')
-  deleteTask(
-    @Param('taskIndex', new ParseIntPipe())
-    taskIndex: number,
-  ): Promise<DeleteResult> {
-    return this.taskBoardsService.removeTask(+taskIndex);
+
+  //Upload_Task_Files
+  @Post('upload')
+  @UseInterceptors(FilesInterceptor('files', 10, multerOptions('task')))
+  uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
+    console.log(files);
+    return { image: `http://localhost:8888/files/task/${files[0].filename}` };
+    // return this.taskBoardsService.uploadFile()
   }
 }

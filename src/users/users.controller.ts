@@ -1,4 +1,3 @@
-import { UseGuards } from '@nestjs/common';
 import {
   Body,
   Controller,
@@ -13,13 +12,13 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from 'src/auth/auth.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Auth } from 'src/common/decorators/auth.decorator';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { CreateUserResponseDto } from './dto/create-user-response.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserLoginDto } from './dto/user-login.dto';
-import { UsersEntity } from './entities/users.entity';
+import { UserRole, UsersEntity } from './entities/users.entity';
 import { UsersService } from './users.service';
 
 @ApiTags('Users')
@@ -74,7 +73,7 @@ export class UsersController {
   }
 
   // Find_User
-  @UseGuards(JwtAuthGuard)
+  @Auth(UserRole.User, UserRole.Admin)
   @Get(':userIndex')
   findUser(
     @Param('userIndex', new ParseIntPipe())
@@ -84,14 +83,14 @@ export class UsersController {
   }
 
   // Find_All_User
-  @UseGuards(JwtAuthGuard)
+  @Auth(UserRole.User, UserRole.Admin)
   @Get()
   findAllUser(): Promise<UsersEntity[]> {
     return this.usersService.getUserList();
   }
 
   // Update_User
-  @UseGuards(JwtAuthGuard)
+  @Auth(UserRole.User, UserRole.Admin)
   @Patch(':userIndex')
   updateUser(
     @Param('userIndex', new ParseIntPipe())
@@ -102,7 +101,7 @@ export class UsersController {
   }
 
   // Remove_User
-  @UseGuards(JwtAuthGuard)
+  @Auth(UserRole.Admin)
   @Delete(':userIndex')
   remove(
     @Param('userIndex', new ParseIntPipe())

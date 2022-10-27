@@ -27,7 +27,7 @@ export class UsersService {
   async createUser(
     createUserDto: CreateUserDto,
   ): Promise<UsersEntity | object> {
-    const { username, email, password } = createUserDto;
+    const { username, email, password, role } = createUserDto;
 
     // password 암호화
     const saltRounds = 10;
@@ -40,6 +40,7 @@ export class UsersService {
     user.email = email;
     user.password = hash;
     user.salt = salt;
+    user.role = role;
 
     try {
       await this.userRepository.save(user);
@@ -52,6 +53,7 @@ export class UsersService {
         email: user.email,
         userIndex: user.userIndex,
         createdAt: user.createdAt,
+        role: user.role,
       };
     } catch (error) {
       // Service_signUp_Error 처리

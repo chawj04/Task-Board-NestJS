@@ -4,9 +4,11 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as expressBasicAuth from 'express-basic-auth';
 import * as config from 'config';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import * as path from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Config_Setting
   const nestServerConfig = config.get('server');
@@ -14,6 +16,12 @@ async function bootstrap() {
 
   // class-validation 동작을 위해 사용
   app.useGlobalPipes(new ValidationPipe());
+
+  // File_Upload - dist/common/uploads/task
+  app.useStaticAssets(path.join(__dirname, './common', 'uploads'), {
+    // Ex) http://localhost:8888/files/task/task.png
+    prefix: '/files',
+  });
 
   // Swagger Security
   app.use(

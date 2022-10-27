@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
-import { UsersEntity } from '../entities/users.entity';
+import { UserRole, UsersEntity } from '../entities/users.entity';
 
 // Create_User_Request
 export class CreateUserDto extends UsersEntity {
@@ -15,4 +15,7 @@ export class CreateUserDto extends UsersEntity {
   @IsEmail({}, { message: 'Please enter a valid email address' })
   @IsNotEmpty()
   email: string;
+
+  @IsNotEmpty()
+  role: UserRole;
 }

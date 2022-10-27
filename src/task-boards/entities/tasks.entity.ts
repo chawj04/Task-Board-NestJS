@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -27,10 +28,14 @@ export class TaskBoardsEntity {
   updatedAt: Date;
 
   @DeleteDateColumn()
-  deletedAt: Date;
+  deletedAt: Date | null;
 
-  @ManyToOne((type) => UsersEntity, (users) => users.taskBoards, {
-    eager: false,
+  @Column({ type: 'int', name: 'userIdx', nullable: true })
+  userIdx: number;
+
+  @ManyToOne(() => UsersEntity, (User) => User.userIndex, {
+    onDelete: 'CASCADE', // User 삭제시, Task도 삭제
   })
-  users: UsersEntity;
+  @JoinColumn([{ name: 'userIdx', referencedColumnName: 'userIndex' }])
+  User: Promise<UsersEntity>;
 }

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TaskBoardsController } from './task-boards.controller';
+import { TaskBoardsController } from './1.controller';
 
 describe('TaskBoardsController', () => {
   let controller: TaskBoardsController;

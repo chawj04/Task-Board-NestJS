@@ -10,6 +10,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export enum UserRole {
+  User = 'user',
+  Admin = 'admin',
+}
+
 @Entity()
 @Unique(['email']) // 이메일 중복 방지
 export class UsersEntity {
@@ -49,8 +54,16 @@ export class UsersEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany((type) => TaskBoardsEntity, (taskBoards) => taskBoards.users, {
-    eager: true,
+  @Column({
+    type: 'enum',
+    enum: UserRole,
   })
-  taskBoards: TaskBoardsEntity[];
+  role: UserRole;
+
+  @OneToMany(() => TaskBoardsEntity, (TaskBoards) => TaskBoards.User, {
+    // eager: true, // - User 로드 시, 속한 모든 Task 로드
+    cascade: true, // User 저장시, Task도 저장
+  })
+  // Lazy Relations - User Entity 접근 시 데이터 로드
+  TaskBoards: Promise<TaskBoardsEntity[]>;
 }
