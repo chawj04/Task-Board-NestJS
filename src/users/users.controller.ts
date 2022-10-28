@@ -10,7 +10,12 @@ import {
   Delete,
   Patch,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthService } from 'src/auth/auth.service';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { DeleteResult, UpdateResult } from 'typeorm';
@@ -73,6 +78,7 @@ export class UsersController {
   }
 
   // Find_User
+  @ApiBearerAuth('access-token')
   @Auth(UserRole.User, UserRole.Admin)
   @Get(':userIndex')
   findUser(
@@ -83,7 +89,7 @@ export class UsersController {
   }
 
   // Find_All_User
-  @Auth(UserRole.User, UserRole.Admin)
+  @Auth(UserRole.Admin)
   @Get()
   findAllUser(): Promise<UsersEntity[]> {
     return this.usersService.getUserList();

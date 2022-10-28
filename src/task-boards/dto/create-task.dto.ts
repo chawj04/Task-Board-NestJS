@@ -7,7 +7,4 @@ export class CreateTaskDto extends TaskBoardsEntity {
 
   @IsNotEmpty()
   description: string;
-
-  // @IsNotEmpty()
-  // userIdx: number;
 }

@@ -20,6 +20,7 @@ import { UserRole, UsersEntity } from 'src/users/entities/users.entity';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-taks.dto';
+import { UploadFilesDto } from './dto/upload-files.dto';
 import { TaskBoardsEntity } from './entities/tasks.entity';
 import { TaskBoardsService } from './task-boards.service';
 
@@ -94,12 +95,22 @@ export class TaskBoardsController {
     return await this.taskBoardsService.deleteTask(+taskIndex, currentUser);
   }
 
-  //Upload_Task_Files
-  @Post('upload')
-  @UseInterceptors(FilesInterceptor('files', 10, multerOptions('task')))
-  uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
-    console.log(files);
-    return { image: `http://localhost:8888/files/task/${files[0].filename}` };
-    // return this.taskBoardsService.uploadFile()
+  // Upload_Task_Files
+  @Post('upload/:taskIndex')
+  @Auth(UserRole.User, UserRole.Admin)
+  @UseInterceptors(FilesInterceptor('files', 5, multerOptions('task')))
+  uploadFile(
+    @CurrentUser() currentUser: UsersEntity,
+    @Param('taskIndex', new ParseIntPipe()) taskIndex: number,
+    @Body(ValidationPipe) uploadFilesDto: UploadFilesDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ): Promise<UpdateResult> {
+    // console.log('controller', `${files[0].filename}`);
+    return this.taskBoardsService.uploadFile(
+      currentUser,
+      +taskIndex,
+      uploadFilesDto,
+      files,
+    );
   }
 }

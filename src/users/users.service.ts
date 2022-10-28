@@ -114,13 +114,21 @@ export class UsersService {
     userIndex: number,
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
-    const { email, password, username } = updateUserDto;
-    return await this.dataSource
+    const { email, username, role, password, updatedAt } = updateUserDto;
+
+    // password 수정 시 - 다시 암호화
+    const saltRounds = 10;
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hash = bcrypt.hashSync(password, salt);
+
+    const updatedUser = await this.dataSource
       .createQueryBuilder()
       .update(UsersEntity)
-      .set({ email, password, username })
+      .set({ email, username, role, password: hash, salt, updatedAt })
       .where('userIndex = :userIndex', { userIndex })
       .execute();
+
+    return updatedUser;
   }
 
   // Delete_User

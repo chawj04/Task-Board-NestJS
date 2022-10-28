@@ -4,6 +4,7 @@ import { UsersEntity } from 'src/users/entities/users.entity';
 import { DataSource, DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-taks.dto';
+import { UploadFilesDto } from './dto/upload-files.dto';
 import { TaskBoardsEntity } from './entities/tasks.entity';
 
 @Injectable()
@@ -69,11 +70,11 @@ export class TaskBoardsService {
     taskIndex: number,
     updateTaskDto: UpdateTaskDto,
   ): Promise<UpdateResult> {
-    const { taskName, description } = updateTaskDto;
+    const { taskName, description, filesUrl, updatedAt } = updateTaskDto;
     const editedTask = await this.dataSource
       .createQueryBuilder()
       .update(TaskBoardsEntity)
-      .set({ taskName, description })
+      .set({ taskName, description, filesUrl, updatedAt })
       .where('taskIndex = :taskIndex', { taskIndex })
       .andWhere('userIdx = :userIndex', {
         userIndex: currentUser.userIndex,
@@ -110,5 +111,34 @@ export class TaskBoardsService {
       );
     }
     return result;
+  }
+
+  // Upload_File
+  async uploadFile(
+    currentUser: UsersEntity,
+    taskIndex: number,
+    uploadFilesDto: UploadFilesDto,
+    files: Express.Multer.File[],
+  ): Promise<UpdateResult> {
+    let { filesUrl } = uploadFilesDto;
+    filesUrl = `http://localhost:8888/files/task/${files[0].filename}`;
+
+    const uploadedFilesUrl = await this.dataSource
+      .createQueryBuilder()
+      .update(TaskBoardsEntity)
+      .set({ filesUrl })
+      .where('taskIndex = :taskIndex', { taskIndex })
+      .andWhere('userIdx = :userIndex', {
+        userIndex: currentUser.userIndex,
+      })
+      .execute();
+    // console.log('service', uploadedFilesUrl);
+
+    if (uploadedFilesUrl.affected === 0) {
+      throw new NotFoundException(
+        `You do not have permission to upload this post - ${taskIndex}`,
+      );
+    }
+    return uploadedFilesUrl;
   }
 }

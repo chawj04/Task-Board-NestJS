@@ -39,6 +39,15 @@ async function bootstrap() {
     .setTitle('Task-Board-NestJS')
     .setDescription('Task-Board-API')
     .setVersion('1.0.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        name: 'JWT',
+        in: 'header',
+      },
+      'access-token',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, nestSwaggerConfig);
   SwaggerModule.setup('api', app, document);

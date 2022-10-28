@@ -2,7 +2,6 @@ import { UsersEntity } from 'src/users/entities/users.entity';
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -21,16 +20,16 @@ export class TaskBoardsEntity {
   @Column('varchar', { name: 'description', length: 300 })
   description: string;
 
+  @Column('varchar', { name: 'filesUrl', length: 500, nullable: true })
+  filesUrl: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @DeleteDateColumn()
-  deletedAt: Date | null;
-
-  @Column({ type: 'int', name: 'userIdx', nullable: true })
+  @Column({ type: 'int', name: 'userIdx', nullable: false })
   userIdx: number;
 
   @ManyToOne(() => UsersEntity, (User) => User.userIndex, {
