@@ -53,13 +53,20 @@ export class TaskBoardsService {
   }
 
   // Get_Task_List
-  async getTaskList(currentUser: UsersEntity): Promise<TaskBoardsEntity[]> {
+  async getTaskList(
+    currentUser: UsersEntity,
+    page,
+    pageSize,
+  ): Promise<TaskBoardsEntity[]> {
+    // console.log(page, pageSize);
     const foundTaskList = await this.dataSource
       .getRepository(TaskBoardsEntity)
       .createQueryBuilder('taskBoards')
       .where('taskBoards.userIdx = :userIndex', {
         userIndex: currentUser.userIndex,
       })
+      .take(pageSize)
+      .skip((page - 1) * pageSize)
       .getMany();
     return foundTaskList;
   }

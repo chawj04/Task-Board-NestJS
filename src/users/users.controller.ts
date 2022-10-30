@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Delete,
   Patch,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -78,8 +79,8 @@ export class UsersController {
   // Find_All_User
   @Auth(UserRole.Admin)
   @Get()
-  findAllUser(): Promise<UsersEntity[]> {
-    return this.usersService.getUserList();
+  findAllUser(@Query() query): Promise<UsersEntity[]> {
+    return this.usersService.getUserList(query.page, query.pageSize);
   }
 
   // Update_User

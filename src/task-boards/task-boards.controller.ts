@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
   ValidationPipe,
@@ -66,8 +67,13 @@ export class TaskBoardsController {
   @Get()
   async findAllTask(
     @CurrentUser() currentUser: UsersEntity,
+    @Query() query,
   ): Promise<TaskBoardsEntity[]> {
-    return await this.taskBoardsService.getTaskList(currentUser);
+    return await this.taskBoardsService.getTaskList(
+      currentUser,
+      query.page,
+      query.pageSize,
+    );
   }
 
   // Update_Task

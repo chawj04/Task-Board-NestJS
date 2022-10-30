@@ -96,10 +96,13 @@ export class UsersService {
   }
 
   // Get_User_List
-  async getUserList(): Promise<UsersEntity[]> {
+  async getUserList(page, pageSize): Promise<UsersEntity[]> {
+    // console.log(page, pageSize);
     return await this.dataSource
       .getRepository(UsersEntity)
       .createQueryBuilder('user')
+      .take(pageSize)
+      .skip((page - 1) * pageSize)
       .getMany();
   }
 

@@ -8,8 +8,8 @@ import * as path from 'path';
 import { ConfigService } from '@nestjs/config';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import helmet from 'helmet';
-import * as csurf from 'csurf';
-import * as cookieParser from 'cookie-parser';
+// import * as csurf from 'csurf';
+// import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
