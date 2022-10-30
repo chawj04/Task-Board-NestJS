@@ -3,16 +3,15 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as expressBasicAuth from 'express-basic-auth';
-import * as config from 'config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as path from 'path';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Config_Setting
-  const nestServerConfig = config.get('server');
-  const swaggerSecurityConfig = config.get('swagger');
+  const configService = app.get(ConfigService);
 
   // class-validation 동작을 위해 사용
   app.useGlobalPipes(new ValidationPipe());
@@ -24,12 +23,17 @@ async function bootstrap() {
   });
 
   // Swagger Security
+  const swaggerSecurityId = configService.get('SWAGGER_SECURITY_ID');
+  const swaggerSecurityPassword = configService.get(
+    'SWAGGER_SECURITY_PASSWORD',
+  );
+
   app.use(
     ['/api', '/api-json'],
     expressBasicAuth({
       challenge: true,
       users: {
-        [swaggerSecurityConfig.id]: swaggerSecurityConfig.password,
+        [swaggerSecurityId]: swaggerSecurityPassword,
       },
     }),
   );
@@ -52,8 +56,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, nestSwaggerConfig);
   SwaggerModule.setup('api', app, document);
 
-  // nestServerConfig - Setting_Port
-  const port = nestServerConfig.port;
+  // Setting_Port
+  const port = configService.get('NEST_SERVER_PORT');
+
   await app.listen(port);
 
   //Logger

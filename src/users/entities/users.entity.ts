@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TaskBoardsEntity } from 'src/task-boards/entities/tasks.entity';
+import { TaskBoardsEntity } from '../../task-boards/entities/tasks.entity';
 import {
   Column,
   CreateDateColumn,

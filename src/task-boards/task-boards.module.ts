@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 import { TaskBoardsEntity } from './entities/tasks.entity';
-import { UsersEntity } from 'src/users/entities/users.entity';
-import { UsersService } from 'src/users/users.service';
+import { UsersEntity } from '../users/entities/users.entity';
+import { UsersService } from '../users/users.service';
 import { TaskBoardsController } from './task-boards.controller';
 import { TaskBoardsService } from './task-boards.service';
 

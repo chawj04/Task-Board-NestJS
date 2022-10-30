@@ -13,10 +13,10 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { CurrentUser } from 'src/common/decorators/user.decorator';
-import { multerOptions } from 'src/common/utils/multer.options';
-import { UserRole, UsersEntity } from 'src/users/entities/users.entity';
+import { Auth } from '../common/decorators/auth.decorator';
+import { CurrentUser } from '../common/decorators/user.decorator';
+import { multerOptions } from '../common/utils/multer.options';
+import { UserRole, UsersEntity } from '../users/entities/users.entity';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-taks.dto';
@@ -99,14 +99,14 @@ export class TaskBoardsController {
   @Post('upload/:taskIndex')
   @Auth(UserRole.User, UserRole.Admin)
   @UseInterceptors(FilesInterceptor('files', 5, multerOptions('task')))
-  uploadFile(
+  async uploadFile(
     @CurrentUser() currentUser: UsersEntity,
     @Param('taskIndex', new ParseIntPipe()) taskIndex: number,
     @Body(ValidationPipe) uploadFilesDto: UploadFilesDto,
     @UploadedFiles() files: Express.Multer.File[],
   ): Promise<UpdateResult> {
     // console.log('controller', `${files[0].filename}`);
-    return this.taskBoardsService.uploadFile(
+    return await this.taskBoardsService.uploadFile(
       currentUser,
       +taskIndex,
       uploadFilesDto,
