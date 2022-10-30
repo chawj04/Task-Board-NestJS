@@ -1,9 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -14,9 +9,6 @@ import { UsersEntity } from './entities/users.entity';
 
 @Injectable()
 export class UsersService {
-  // UsersService - Logger
-  private logger = new Logger('UsersService');
-
   constructor(
     @InjectRepository(UsersEntity)
     private userRepository: Repository<UsersEntity>,
@@ -42,31 +34,16 @@ export class UsersService {
     user.salt = salt;
     user.role = role;
 
-    try {
-      await this.userRepository.save(user);
-      this.logger.verbose(
-        `Created New User - ${JSON.stringify(createUserDto)}`,
-      );
-      // Response Filtering
-      return {
-        username: user.username,
-        email: user.email,
-        userIndex: user.userIndex,
-        createdAt: user.createdAt,
-        role: user.role,
-      };
-    } catch (error) {
-      // Service_signUp_Error 처리
-      // console.log(error.errno);
-      this.logger.error(error);
-      if (error.errno === 1062) {
-        throw new ConflictException(
-          'Your email address is already in our database',
-        );
-      } else {
-        throw new InternalServerErrorException();
-      }
-    }
+    await this.userRepository.save(user);
+
+    // Response Filtering
+    return {
+      username: user.username,
+      email: user.email,
+      userIndex: user.userIndex,
+      createdAt: user.createdAt,
+      role: user.role,
+    };
   }
 
   // User_SignIn
@@ -81,7 +58,7 @@ export class UsersService {
     const { salt } = accessUser;
     const hash = bcrypt.hashSync(password, salt);
 
-    const signInUser = this.dataSource
+    const signInUser = await this.dataSource
       .getRepository(UsersEntity)
       .createQueryBuilder('user')
       .where('user.email = :email', { email })
@@ -93,12 +70,18 @@ export class UsersService {
 
   // Get_User
   async getUser(userIndex: number): Promise<UsersEntity> {
-    // console.log(userIndex);
-    return await this.dataSource
+    const foundUser = await this.dataSource
       .getRepository(UsersEntity)
       .createQueryBuilder('user')
       .where('user.userIndex = :userIndex', { userIndex })
       .getOne();
+
+    if (!foundUser) {
+      throw new NotFoundException(
+        `There is no user record corresponding to this userIndex- ${userIndex}`,
+      );
+    }
+    return foundUser;
   }
 
   // Get_User_List

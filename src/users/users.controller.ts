@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Logger,
   Post,
   ValidationPipe,
   Get,
@@ -29,9 +28,6 @@ import { UsersService } from './users.service';
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  // UsersController - Logger
-  private logger = new Logger('UsersController');
-
   constructor(
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
@@ -56,15 +52,7 @@ export class UsersController {
     // ValidationPipe - 유효성 Check
     @Body(ValidationPipe) createUserDto: CreateUserDto,
   ): Promise<UsersEntity | object> {
-    try {
-      this.logger.verbose(
-        `Created New User - ${JSON.stringify(createUserDto)}`,
-      );
-      return this.usersService.createUser(createUserDto);
-    } catch (error) {
-      // Controller_signUp_Error 처리
-      this.logger.error(error);
-    }
+    return this.usersService.createUser(createUserDto);
   }
 
   // SignIn_User
@@ -72,9 +60,8 @@ export class UsersController {
   async signIn(
     @Body(ValidationPipe) userLoginDto: UserLoginDto,
   ): Promise<UsersEntity | object> {
-    const sginInUser = await this.usersService.accessUser(userLoginDto);
-    // console.log('sginInUser', sginInUser);
-    return this.authService.login(sginInUser);
+    const signInUser = await this.usersService.accessUser(userLoginDto);
+    return this.authService.login(signInUser);
   }
 
   // Find_User
