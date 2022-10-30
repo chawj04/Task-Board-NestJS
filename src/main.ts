@@ -6,6 +6,7 @@ import * as expressBasicAuth from 'express-basic-auth';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as path from 'path';
 import { ConfigService } from '@nestjs/config';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -58,6 +59,9 @@ async function bootstrap() {
 
   // Setting_Port
   const port = configService.get('NEST_SERVER_PORT');
+
+  // Exception filters
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(port);
 

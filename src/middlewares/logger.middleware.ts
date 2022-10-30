@@ -10,6 +10,8 @@ export class LoggerMiddleware implements NestMiddleware {
     const { statusCode } = response;
     const body = request.body;
 
+    console.log(JSON.stringify(request.statusCode));
+
     response.on('finish', () => {
       this.logger.log(
         ` ${statusCode} ${method} ${originalUrl} - Body: ${JSON.stringify(

@@ -33,9 +33,10 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
   ],
   controllers: [AppController],
 })
+
+// Logger_Middleware_Setting
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
-    // Logger_Middleware_Setting
     consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }

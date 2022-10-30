@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -34,6 +38,13 @@ export class UsersService {
     user.salt = salt;
     user.role = role;
 
+    // Exist_Email_Error
+    const existEmail = await this.userRepository.findOneBy({ email });
+    if (existEmail)
+      throw new ConflictException(
+        'Your email address is already in our database',
+      );
+
     await this.userRepository.save(user);
 
     // Response Filtering
@@ -64,6 +75,14 @@ export class UsersService {
       .where('user.email = :email', { email })
       .andWhere('user.password = :password', { password: hash })
       .getOne();
+
+    // Email & Password
+    const validEmail = await this.userRepository.findOneBy({ email });
+    const validPassword = await this.userRepository.findOneBy({ password });
+    if (!validEmail || !validPassword)
+      throw new ConflictException(
+        'Please enter a valid login email and password',
+      );
 
     return signInUser;
   }
@@ -111,16 +130,28 @@ export class UsersService {
       .where('userIndex = :userIndex', { userIndex })
       .execute();
 
+    if (updatedUser.affected === 0) {
+      throw new NotFoundException(
+        `There is no user record corresponding to this userIndex - ${userIndex}`,
+      );
+    }
     return updatedUser;
   }
 
   // Delete_User
   async remove(userIndex: number): Promise<DeleteResult> {
-    return await this.dataSource
+    const deletedUser = await this.dataSource
       .createQueryBuilder()
       .delete()
       .from(UsersEntity)
       .where('userIndex = :userIndex', { userIndex })
       .execute();
+
+    if (deletedUser.affected === 0) {
+      throw new NotFoundException(
+        `There is no user record corresponding to this userIndex - ${userIndex}`,
+      );
+    }
+    return deletedUser;
   }
 }
