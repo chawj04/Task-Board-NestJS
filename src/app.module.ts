@@ -8,9 +8,17 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersEntity } from './users/entities/users.entity';
 import { TaskBoardsEntity } from './task-boards/entities/tasks.entity';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
+    // Rate-Limiting
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 5,
+    }),
+    // Config
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -27,11 +35,18 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
       // Time - Seoul
       timezone: 'Z',
     }),
+    // Module
     UsersModule,
     AuthModule,
     TaskBoardsModule,
   ],
   controllers: [AppController],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 
 // Logger_Middleware_Setting

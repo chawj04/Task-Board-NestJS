@@ -7,6 +7,9 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import * as path from 'path';
 import { ConfigService } from '@nestjs/config';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import helmet from 'helmet';
+import * as csurf from 'csurf';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -62,6 +65,26 @@ async function bootstrap() {
 
   // Exception filters
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  // CORS
+  app.enableCors({
+    origin: ['http://localhost:8888', 'http://localhost:3000'],
+    methods: 'GET,PUT,POST,PATCH,DELETE,UPDATE,OPTIONS',
+    credentials: true,
+  });
+
+  // Helmet
+  app.use(helmet());
+
+  // CSRF
+  // app.use(cookieParser());
+  // app.use('/', csurf({ cookie: true }));
+  // app.use((req: any, res: any, next: any) => {
+  //   const token = req.csrfToken();
+  //   res.cookie('XSRF-TOKEN', token);
+  //   res.locals.csrfToken = token;
+  //   next();
+  // });
 
   await app.listen(port);
 

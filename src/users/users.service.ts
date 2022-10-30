@@ -76,14 +76,6 @@ export class UsersService {
       .andWhere('user.password = :password', { password: hash })
       .getOne();
 
-    // Email & Password
-    const validEmail = await this.userRepository.findOneBy({ email });
-    const validPassword = await this.userRepository.findOneBy({ password });
-    if (!validEmail || !validPassword)
-      throw new ConflictException(
-        'Please enter a valid login email and password',
-      );
-
     return signInUser;
   }
 
