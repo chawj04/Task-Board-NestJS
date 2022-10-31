@@ -7,9 +7,9 @@ import { TaskBoardsModule } from './task-boards/task-boards.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersEntity } from './users/entities/users.entity';
 import { TaskBoardsEntity } from './task-boards/entities/tasks.entity';
-import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 
 @Module({
   imports: [

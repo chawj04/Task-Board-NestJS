@@ -24,9 +24,11 @@ import { UpdateTaskDto } from './dto/update-taks.dto';
 import { UploadFilesDto } from './dto/upload-files.dto';
 import { TaskBoardsEntity } from './entities/tasks.entity';
 import { TaskBoardsService } from './task-boards.service';
+import { SuccessInterceptor } from '../common/interceptors/success.interceptor';
 
 @ApiTags('Task-Boards')
 @Controller('task-boards')
+@UseInterceptors(new SuccessInterceptor())
 export class TaskBoardsController {
   constructor(private readonly taskBoardsService: TaskBoardsService) {}
 

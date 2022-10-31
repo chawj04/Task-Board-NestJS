@@ -9,6 +9,7 @@ import {
   Delete,
   Patch,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -25,9 +26,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserRole, UsersEntity } from './entities/users.entity';
 import { UsersService } from './users.service';
+import { SuccessInterceptor } from '../common/interceptors/success.interceptor';
 
 @ApiTags('Users')
 @Controller('users')
+@UseInterceptors(new SuccessInterceptor())
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
