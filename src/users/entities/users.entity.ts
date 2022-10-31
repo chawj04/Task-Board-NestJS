@@ -18,11 +18,16 @@ export enum UserRole {
 @Entity()
 @Unique(['email']) // 이메일 중복 방지
 export class UsersEntity {
+  @ApiProperty({
+    example: '33',
+    description: 'userIndex',
+    required: true,
+  })
   @PrimaryGeneratedColumn({ type: 'int', name: 'userIndex' })
   userIndex: number;
 
   @ApiProperty({
-    example: 'testName1',
+    example: 'userTestingName',
     description: 'username',
     required: true,
   })
@@ -30,7 +35,7 @@ export class UsersEntity {
   username: string;
 
   @ApiProperty({
-    example: 'testEmail@test.com',
+    example: 'userTestingEmail@test.com',
     description: 'email',
     required: true,
   })
@@ -38,7 +43,7 @@ export class UsersEntity {
   email: string;
 
   @ApiProperty({
-    example: 'asd1234',
+    example: 'asdqwezxc1234',
     description: 'password',
     required: true,
   })
@@ -48,12 +53,25 @@ export class UsersEntity {
   @Column()
   salt: string;
 
+  @ApiProperty({
+    example: '2022-10-23T06:04:38.570Z',
+    description: 'createdAt',
+  })
   @CreateDateColumn()
   createdAt: Date;
 
+  @ApiProperty({
+    example: '2022-10-23T06:04:38.570Z',
+    description: 'updatedAt',
+  })
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @ApiProperty({
+    example: 'admin',
+    description: 'role',
+    required: true,
+  })
   @Column({
     type: 'enum',
     enum: UserRole,
