@@ -60,10 +60,6 @@ export class UsersEntity {
   @CreateDateColumn()
   createdAt: Date;
 
-  @ApiProperty({
-    example: '2022-10-23T06:04:38.570Z',
-    description: 'updatedAt',
-  })
   @UpdateDateColumn()
   updatedAt: Date;
 

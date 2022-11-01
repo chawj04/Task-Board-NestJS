@@ -8,27 +8,52 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class TaskBoardsEntity {
+  @ApiProperty({
+    example: '22',
+    description: 'taskIndex',
+    required: true,
+  })
   @PrimaryGeneratedColumn({ type: 'int', name: 'taskIndex' })
   taskIndex: number;
 
+  @ApiProperty({
+    example: 'Task_Name',
+    description: 'taskName',
+    required: true,
+  })
   @Column('varchar', { name: 'taskName', length: 45 })
   taskName: string;
 
-  @Column('varchar', { name: 'description', length: 300 })
+  @ApiProperty({
+    example: 'Task_Description',
+    description: 'description',
+    required: true,
+  })
+  @Column('varchar', { name: 'description', length: 500 })
   description: string;
 
   @Column('varchar', { name: 'filesUrl', length: 500, nullable: true })
   filesUrl: string;
 
+  @ApiProperty({
+    example: '2022-10-23T06:04:38.570Z',
+    description: 'createdAt',
+  })
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @ApiProperty({
+    example: '33',
+    description: 'userIndex',
+    required: true,
+  })
   @Column({ type: 'int', name: 'userIdx', nullable: false })
   userIdx: number;
 

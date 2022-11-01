@@ -1,30 +1,35 @@
-import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { TaskBoardsEntity } from '../entities/tasks.entity';
 import { Type } from 'class-transformer';
 import { IsNumber, Min } from 'class-validator';
-import { UsersEntity } from '../entities/users.entity';
 
-// User_Response_DTO
-export class UserResponseDto extends OmitType(UsersEntity, [
-  'password',
-] as const) {
+// Task_Boards_Response_DTO
+export class TaskBoardsResponseDto extends TaskBoardsEntity {
   @ApiProperty({
     example: '2022-10-23T06:04:38.570Z',
     description: 'updatedAt',
   })
   updatedAt: Date;
+
+  @ApiProperty({
+    example: null,
+    description: 'filesUrl',
+    required: true,
+  })
+  filesUrl: string;
 }
 
-// Swagger_User_Response
-export class UserResponse {
+// Swagger_Task_Boards_Response
+export class TaskBoardsResponse {
   @ApiProperty()
   success: boolean;
 
   @ApiProperty()
-  data: UserResponseDto;
+  data: TaskBoardsResponseDto;
 }
 
-// Swagger_User_Success_Response
-export class UserSucessResponse {
+// Swagger_Task_Boards_Success_Response
+export class TaskBoardsSucessResponse {
   @ApiProperty()
   success: boolean;
 }

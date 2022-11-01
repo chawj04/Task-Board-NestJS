@@ -26,6 +26,7 @@ export class TaskBoardsService {
     task.description = description;
     task.userIdx = currentUser.userIndex;
     const result = await this.taskBoardsRepository.save(task);
+
     return result;
   }
 

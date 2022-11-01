@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiCreatedResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -49,7 +48,7 @@ export class UsersController {
     summary: 'User_회원가입',
     description: '회원가입 API',
   })
-  @ApiCreatedResponse({
+  @ApiResponse({
     status: 201,
     description: 'Response Sucess',
     type: UserResponse,
@@ -75,7 +74,7 @@ export class UsersController {
     summary: 'User_로그인',
     description: '로그인 API',
   })
-  @ApiCreatedResponse({
+  @ApiResponse({
     status: 201,
     description: 'Response Sucess',
     type: UserSucessResponse,
@@ -102,7 +101,7 @@ export class UsersController {
     summary: 'User_회원 정보 조회',
     description: '회원 정보 조회 API',
   })
-  @ApiCreatedResponse({
+  @ApiResponse({
     status: 200,
     description: 'Response Sucess',
     type: UserResponse,
@@ -173,7 +172,7 @@ export class UsersController {
     summary: 'User_회원 정보 수정',
     description: '회원 정보 수정 API',
   })
-  @ApiCreatedResponse({
+  @ApiResponse({
     status: 200,
     description: 'Response Sucess',
     type: UserSucessResponse,
@@ -203,7 +202,7 @@ export class UsersController {
     summary: 'User_회원 정보 삭제',
     description: '회원 정보 삭제 API',
   })
-  @ApiCreatedResponse({
+  @ApiResponse({
     status: 200,
     description: 'Response Sucess',
     type: UserSucessResponse,
