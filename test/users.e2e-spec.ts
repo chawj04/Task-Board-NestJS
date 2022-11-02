@@ -13,18 +13,18 @@ describe('Users-Controller E2E TEST', () => {
     }).compile();
 
     app = moduleRef.createNestApplication();
-    // Test 수행 전, DB synchronize로 DB 초기화
+    // Test 수행 전, synchronize로 DB 초기화
     // await app.get(DataSource).synchronize(true);
     await app.init();
   });
 
-  // Test 수행 후, DB synchronize로 DB 초기화
+  // Test 수행 후, synchronize로 DB 초기화
   afterAll(async () => {
     await app.get(DataSource).synchronize(true);
   });
 
   // SignUp_User
-  it('POST: SignUp_Success', async () => {
+  it('POST: SignUp - Success', async () => {
     const result = await request(app.getHttpServer())
       .post('/users/signup')
       .send({
@@ -36,7 +36,7 @@ describe('Users-Controller E2E TEST', () => {
     expect(result.statusCode).toBe(201);
     expect(result.body.success).toBe(true);
   });
-  it('POST: SignUp_Confilct_Failed', async () => {
+  it('POST: SignUp - Confilct', async () => {
     const result = await request(app.getHttpServer())
       .post('/users/signup')
       .send({
@@ -50,7 +50,7 @@ describe('Users-Controller E2E TEST', () => {
       'Your email address is already in our database',
     );
   });
-  it('POST: SignUp_Bad_Request_Failed', async () => {
+  it('POST: SignUp - Bad_Request', async () => {
     const result = await request(app.getHttpServer())
       .post('/users/signup')
       .send({
@@ -66,7 +66,7 @@ describe('Users-Controller E2E TEST', () => {
 
   // SignIn_User
   let accessToken: string; // 상위 Scope -> accessToken 변수 저장
-  it('POST: SignIn_Success', async () => {
+  it('POST: SignIn - Success', async () => {
     const result = await request(app.getHttpServer())
       .post('/users/signin')
       .send({
@@ -77,7 +77,7 @@ describe('Users-Controller E2E TEST', () => {
     expect(result.statusCode).toBe(201);
     expect(result.body.success).toBe(true);
   });
-  it('POST: SignIn_Bad_Request_Failed', async () => {
+  it('POST: SignIn - Bad_Request', async () => {
     const result = await request(app.getHttpServer())
       .post('/users/signin')
       .send({ email: 'vxsets11@google.com' });
@@ -89,21 +89,21 @@ describe('Users-Controller E2E TEST', () => {
   });
 
   // Find_User
-  it('GET: Find_User_Success', async () => {
+  it('GET: Find_User - Success', async () => {
     const result = await request(app.getHttpServer())
       .get('/users/1')
       .set('Authorization', `Bearer ${accessToken}`);
     expect(result.statusCode).toBe(200);
     expect(result.body.success).toBe(true);
   });
-  it('GET: Find_User_Unauthorized_Failed', async () => {
+  it('GET: Find_User - Unauthorized', async () => {
     const result = await request(app.getHttpServer()).get('/users/1');
     expect(result.statusCode).toBe(401);
     expect(result.body.message).toStrictEqual('Unauthorized');
   });
 
   // Find_All_User
-  it('GET: Find_All_User_Success', async () => {
+  it('GET: Find_All_User - Success', async () => {
     const result = await request(app.getHttpServer())
       .get('/users?page=1&pageSize=5')
       .set('Authorization', `Bearer ${accessToken}`);
@@ -111,7 +111,7 @@ describe('Users-Controller E2E TEST', () => {
     expect(result.statusCode).toBe(200);
     expect(result.body.success).toBe(true);
   });
-  it('GET: Find_All_User_Unauthorized_Failed', async () => {
+  it('GET: Find_All_User - Unauthorized', async () => {
     const result = await request(app.getHttpServer()).get(
       '/users?page=1&pageSize=5',
     );
@@ -120,7 +120,7 @@ describe('Users-Controller E2E TEST', () => {
   });
 
   // Update_User
-  it('PATCH: Update_User_Success', async () => {
+  it('PATCH: Update_User - Success', async () => {
     const result = await request(app.getHttpServer())
       .patch('/users/1')
       .send({
@@ -133,7 +133,7 @@ describe('Users-Controller E2E TEST', () => {
     expect(result.statusCode).toBe(200);
     expect(result.body.success).toBe(true);
   });
-  it('PATCH: Update_User_Unauthorized_Failed', async () => {
+  it('PATCH: Update_User - Unauthorized', async () => {
     const result = await request(app.getHttpServer()).patch('/users/1').send({
       username: 'testingUser12',
       email: 'testingEmail12@google.com',
@@ -143,7 +143,7 @@ describe('Users-Controller E2E TEST', () => {
     expect(result.statusCode).toBe(401);
     expect(result.body.message).toStrictEqual('Unauthorized');
   });
-  it('PATCH: Update_User_Not_Found_Failed', async () => {
+  it('PATCH: Update_User - Not_Found', async () => {
     const result = await request(app.getHttpServer())
       .patch('/users/2')
       .send({
@@ -160,19 +160,19 @@ describe('Users-Controller E2E TEST', () => {
   });
 
   // Remove_User
-  it('DELETE: Remove_User_Success', async () => {
+  it('DELETE: Remove_User - Success', async () => {
     const result = await request(app.getHttpServer())
       .delete('/users/1')
       .set('Authorization', `Bearer ${accessToken}`);
     expect(result.statusCode).toBe(200);
     expect(result.body.success).toBe(true);
   });
-  it('DELETE: Remove_User_Unauthorized_Failed', async () => {
+  it('DELETE: Remove_User - Unauthorized', async () => {
     const result = await request(app.getHttpServer()).delete('/users/1');
     expect(result.statusCode).toBe(401);
     expect(result.body.message).toStrictEqual('Unauthorized');
   });
-  it('DELETE: Remove_User_Not_Found_Failed', async () => {
+  it('DELETE: Remove_User - Not_Found', async () => {
     const result = await request(app.getHttpServer())
       .delete('/users/1')
       .set('Authorization', `Bearer ${accessToken}`);

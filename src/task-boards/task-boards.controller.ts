@@ -168,7 +168,7 @@ export class TaskBoardsController {
     description: '일감 수정 API',
   })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'Response Sucess',
     type: TaskBoardsSucessResponse,
   })
@@ -202,7 +202,7 @@ export class TaskBoardsController {
     description: '개별 일감 삭제 API',
   })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'Response Sucess',
     type: TaskBoardsSucessResponse,
   })
