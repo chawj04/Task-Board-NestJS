@@ -7,7 +7,7 @@ import { DataSource } from 'typeorm';
 describe('Users-Controller E2E TEST', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -36,6 +36,20 @@ describe('Users-Controller E2E TEST', () => {
     expect(result.statusCode).toBe(201);
     expect(result.body.success).toBe(true);
   });
+  it('POST: SignUp_Confilct_Failed', async () => {
+    const result = await request(app.getHttpServer())
+      .post('/users/signup')
+      .send({
+        username: 'testingUser',
+        email: 'testingEmail@google.com',
+        password: 'testingPassword123',
+        role: 'admin',
+      });
+    expect(result.statusCode).toBe(409);
+    expect(result.body.message).toStrictEqual(
+      'Your email address is already in our database',
+    );
+  });
   it('POST: SignUp_Bad_Request_Failed', async () => {
     const result = await request(app.getHttpServer())
       .post('/users/signup')
@@ -50,7 +64,7 @@ describe('Users-Controller E2E TEST', () => {
     expect(result.body.error).toBe('Bad Request');
   });
 
-  // SginIn_User
+  // SignIn_User
   let accessToken: string; // 상위 Scope -> accessToken 변수 저장
   it('POST: SignIn_Success', async () => {
     const result = await request(app.getHttpServer())
