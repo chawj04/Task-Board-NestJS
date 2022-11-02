@@ -21,6 +21,8 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
     // Config
     ConfigModule.forRoot({
       isGlobal: true,
+      // dev, test
+      envFilePath: `${process.env.NODE_ENV}.env`,
     }),
     // MySQL_Connection_Setting
     TypeOrmModule.forRoot({
