@@ -7,9 +7,9 @@
 
 <img src="https://img.shields.io/badge/Swagger-172B4D?style=for-the-badge&logo=Swagger&logoColor=85EA2D"> <img src="https://img.shields.io/badge/postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white"> <img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=Jest&logoColor=E2E2E2"> <img src="https://img.shields.io/badge/Visual Studio Code-007ACC?style=for-the-badge&logo=Visual Studio Code&logoColor=white"><br><br>
 
-## 프로젝트 및 디렉토리 구조
+## 디렉토리 및 프로젝트 구조
 
-![파일구조](https://user-images.githubusercontent.com/97301076/199750708-44de9c4c-45c7-498c-ae28-56fc3d917b16.png)
+![파일구조](https://user-images.githubusercontent.com/97301076/199753202-e3e7f43e-ce4a-416f-92a0-5762f3e39298.png)
 
 ## 프로젝트 목적 및 기획 이유
 
@@ -26,7 +26,3 @@
 ## 구현 도중 발생한 이슈 및 해결
 
 ![secretOrPrivateKey](https://user-images.githubusercontent.com/97301076/199724988-acbbd4ed-9224-47e5-8d92-99dabf27b970.png)
-
-## Entities 할때 같이 추가
-
-![Erd](https://user-images.githubusercontent.com/97301076/199724645-b528f41a-1523-461a-b0f5-c293eee61452.png)
