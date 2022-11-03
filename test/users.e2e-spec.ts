@@ -14,7 +14,7 @@ describe('Users-Controller E2E TEST', () => {
 
     app = moduleRef.createNestApplication();
     // Test 수행 전, synchronize로 DB 초기화
-    // await app.get(DataSource).synchronize(true);
+    await app.get(DataSource).synchronize(true);
     await app.init();
   });
 

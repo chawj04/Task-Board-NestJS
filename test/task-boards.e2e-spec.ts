@@ -13,6 +13,8 @@ describe('Task-Boards-Controller E2E TEST', () => {
     }).compile();
 
     app = moduleRef.createNestApplication();
+    // Test 수행 전, synchronize로 DB 초기화
+    await app.get(DataSource).synchronize(true);
     await app.init();
   });
 
@@ -176,6 +178,7 @@ describe('Task-Boards-Controller E2E TEST', () => {
   //     .set('Authorization', `Bearer ${accessToken}`)
   //     .set('Content-Type', 'multipart/form-data')
   //     .attach('files', '/task/task7667296160650.jpg');
+  //   console.log(result);
   //   expect(result.statusCode).toBe(201);
   //   expect(result.body.success).toBe(true);
   // });
