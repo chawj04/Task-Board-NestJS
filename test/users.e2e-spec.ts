@@ -145,7 +145,7 @@ describe('Users-Controller E2E TEST', () => {
   });
   it('PATCH: Update_User - Not_Found', async () => {
     const result = await request(app.getHttpServer())
-      .patch('/users/2')
+      .patch('/users/35')
       .send({
         username: 'testingUser12',
         email: 'testingEmail12@google.com',
@@ -155,7 +155,7 @@ describe('Users-Controller E2E TEST', () => {
       .set('Authorization', `Bearer ${accessToken}`);
     expect(result.statusCode).toBe(404);
     expect(result.body.message).toStrictEqual(
-      'There is no user record corresponding to this userIndex - 2',
+      'There is no user record corresponding to this userIndex - 35',
     );
   });
 
